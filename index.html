@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape Room: Alimentação Saudável</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-image: url('background.jpg');
+            background-size: cover;
+            color: white;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #gameContainer {
+            margin: 50px auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            max-width: 800px;
+        }
+        #question {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #FFD700; /* Cor dourada para a pergunta */
+        }
+        .option {
+            cursor: pointer;
+            padding: 10px;
+            margin: 5px;
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: black;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            border: 2px solid transparent;
+        }
+        .option:hover {
+            background-color: #87CEFA; /* Azul claro ao passar o mouse */
+            border-color: #00BFFF; /* Borda azul céu profundo */
+        }
+        #feedback {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        #nextButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #28a745; /* Botão verde */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        #nextButton:hover {
+            background-color: #218838; /* Verde mais escuro ao passar o mouse */
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body onload="openFullscreen()">
+
+<div id="gameContainer">
+    <h1>Escape Room: Alimentação Saudável</h1>
+    <div id="question"></div>
+    <div id="options"></div>
+    <div id="feedback" class="hidden"></div>
+    <button id="nextButton" class="hidden">Próxima Pergunta</button>
+</div>
+
+<script>
+    const questions = [
+        {
+            question: "Qual é a principal fonte de proteína em uma dieta saudável?",
+            options: ["Carne Vermelha", "Frutos do Mar", "Feijão", "Salgadinhos"],
+            answer: "Feijão"
+        },
+        {
+            question: "Qual desses alimentos é rico em açúcar?",
+            options: ["Maçã", "Cenoura", "Refrigerante", "Frango"],
+            answer: "Refrigerante"
+        },
+        {
+            question: "O que devemos fazer para evitar a contaminação de alimentos?",
+            options: ["Lavar as mãos", "Cozinhar bem os alimentos", "Armazenar corretamente", "Todas as anteriores"],
+            answer: "Todas as anteriores"
+        },
+        {
+            question: "Qual é a quantidade recomendada de frutas e verduras por dia?",
+            options: ["1 porção", "3 porções", "5 porções", "10 porções"],
+            answer: "5 porções"
+        },
+        {
+            question: "Qual alimento é considerado um carboidrato saudável?",
+            options: ["Arroz integral", "Pão branco", "Doces", "Frituras"],
+            answer: "Arroz integral"
+        },
+        {
+            question: "Qual destes alimentos é rico em gordura saudável?",
+            options: ["Abacate", "Refrigerante", "Biscoitos", "Salsicha"],
+            answer: "Abacate"
+        },
+        {
+            question: "Qual é a principal vitamina encontrada nas laranjas?",
+            options: ["Vitamina A", "Vitamina B12", "Vitamina C", "Vitamina D"],
+            answer: "Vitamina C"
+        },
+        {
+            question: "O que é segurança alimentar?",
+            options: ["Ter comida suficiente", "Comer rápido", "Comer sempre fora", "Nada disso"],
+            answer: "Ter comida suficiente"
+        },
+        {
+            question: "Qual destes métodos é adequado para descongelar alimentos?",
+            options: ["Deixar à temperatura ambiente", "Colocar no micro-ondas", "Deixar no sol", "Ninguém precisa descongelar"],
+            answer: "Colocar no micro-ondas"
+        }
+    ];
+
+    let currentQuestion = 0;
+
+    // Função para embaralhar as perguntas
+    function shuffle(array) {
+        array.sort(() => Math.random() - 0.5);
+    }
+
+    // Embaralha as perguntas ao iniciar o jogo
+    shuffle(questions);
+
+    function loadQuestion() {
+        const questionData = questions[currentQuestion];
+        document.getElementById("question").innerText = questionData.question;
+        const optionsContainer = document.getElementById("options");
+        optionsContainer.innerHTML = ""; // Limpa as opções anteriores
+
+        questionData.options.forEach(option => {
+            const optionElement = document.createElement("div");
+            optionElement.innerText = option;
+            optionElement.classList.add("option");
+            optionElement.onclick = () => checkAnswer(option);
+            optionsContainer.appendChild(optionElement);
+        });
+
+        document.getElementById("feedback").classList.add("hidden");
+        document.getElementById("nextButton").classList.add("hidden");
+    }
+
+    function checkAnswer(selected) {
+        const questionData = questions[currentQuestion];
+        const feedbackElement = document.getElementById("feedback");
+        if (selected === questionData.answer) {
+            feedbackElement.innerText = "Correto! Você está indo muito bem!";
+            document.getElementById("nextButton").classList.remove("hidden");
+        } else {
+            feedbackElement.innerText = "Errado! Tente novamente.";
+        }
+        feedbackElement.classList.remove("hidden");
+    }
+
+    document.getElementById("nextButton").onclick = () => {
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+            loadQuestion();
+        } else {
+            document.getElementById("gameContainer").innerHTML = "<h2>Parabéns! Você escapou da cozinha!</h2>";
+        }
+    };
+
+    function openFullscreen() {
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        } else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
+            document.documentElement.mozRequestFullScreen();
+        } else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+            document.documentElement.webkitRequestFullscreen();
+        } else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
+            document.documentElement.msRequestFullscreen();
+        }
+    }
+
+    // Carrega a primeira pergunta ao iniciar o jogo
+    loadQuestion();
+</script>
+
+</body>
+</html>
